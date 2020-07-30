@@ -77,6 +77,7 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
+//过滤掉不是目录的路由信息，并验证path路径是否有效
 export function filterAsyncRouter(asyncRouterMap) {
     //注意这里的 asyncRouterMap 是一个数组
     const accessedRouters = asyncRouterMap.filter(route => {
@@ -109,7 +110,7 @@ export function resetRouter() {
     router.matcher = newRouter.matcher // the relevant part
 }
 
-
+//将除了按钮以外的节点添加到目录中
 router.$addRoutes = (params) => {
 
     var f = item => {

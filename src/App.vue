@@ -54,7 +54,7 @@
                                      style="border-right: none;"
                                      text-color="#fff"
                                      active-text-color="#ffd04b">
-                                <sidebar v-for="(menu,index) in routes" @collaFa="collapseFa" :key="index"
+                                <sidebar v-for="(menu,index) in routes.filter(route => !route.IsHide)" @collaFa="collapseFa" :key="index"
                                          :item="menu"/>
                             </el-menu>
 
@@ -184,7 +184,7 @@
                     resource: '',
                     desc: ''
                 },
-                routes: [],
+                routes: [],//路由
                 tagNews: [
                     {name: '前后端分离', type: ''},
                     {name: 'vue.js', type: ''},

@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     isExternalLink(to) {
-      return isExternal(to);
+      return isExternal(to);//跳转至外部链接
     },
     cop: function() {
       // 子组件中触发父组件方法collaFa并传值123

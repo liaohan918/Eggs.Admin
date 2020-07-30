@@ -29,9 +29,11 @@ export default {
   },
   async created() {
     try {
-      await applicationUserManager.signinRedirectCallback();
+	  console.log("重定向回首页")
+	  await applicationUserManager.signinRedirectCallback()
       let _this = this;
-      let user = await applicationUserManager.getUser();
+	  let user = await applicationUserManager.getUser()
+	  
       _this.$store.commit("saveToken", user.access_token);
 
       var curTime = new Date();
@@ -42,7 +44,6 @@ export default {
 
       window.localStorage.refreshtime = expiredate;
       window.localStorage.expires_in = user.expires_in;
-
       _this.$notify({
         type: "success",
         message: `成功获取令牌，项目初始化中...`,

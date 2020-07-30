@@ -1,6 +1,6 @@
 <template>
     <div style="margin-top: 30px;">
-          <div style="margin: 20px;"> 欢迎来到 BlogAdmin 后台管理系统!</div>
+          <div style="margin: 20px;"> 欢迎来到 EggsAdmin 后台管理系统!</div>
 
 <el-card class="welcome-card note" style="width: calc(49% - 10px);margin-right: 10px;">
    <div slot="header" class="clearfix">
