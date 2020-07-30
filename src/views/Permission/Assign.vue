@@ -36,18 +36,20 @@
                             default-expand-all
                             :expand-on-click-node="true"
                             :check-strictly="true"
-                    >
+                    >					 
+						<!-- 插槽，放自定义节点内容，此处的class和slot-scope均是固定写法 --> 
                         <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <span>{{ node.label }}</span>
-                        <span>
-                        <el-checkbox-group v-model="assignBtns">
-                        <el-checkbox v-for="btn in data.btns" :key="btn.value"
-                                     :label="btn.value.toString()">
-                                     {{btn.label}}
-                                     </el-checkbox>
-                        </el-checkbox-group>
-
-                        </span>
+							<!-- 标题 -->
+							<span>{{ node.label }}</span>
+							<span>
+								<!-- 自定义多炫酷 -->
+								<el-checkbox-group v-model="assignBtns">
+									<el-checkbox v-for="btn in data.btns" :key="btn.value"
+										:label="btn.value.toString()">
+										{{btn.label}}
+									</el-checkbox>
+								</el-checkbox-group>
+							</span>
                         </span>
                     </el-tree>
                 </div>
@@ -78,7 +80,7 @@
                 checked1: false,
                 loadingSaveStr:'保存',
                 loadingSave:false,
-                assignBtns: [],
+                assignBtns: [],//已勾选的按钮权限
                 defaultProps: {
                     children: 'children',
                     label: 'label',
@@ -147,7 +149,6 @@
                     _this.loadingSaveStr='保存';
                     this.$refs.tree.setCheckedKeys(res.data.response.permissionids);
                     this.assignBtns = res.data.response.assignbtns;
-
                 });
             },
             operate(id) {
@@ -157,7 +158,7 @@
                 this.roleid = id;
                 this.getPermissionIds(id);
             },
-            saveAssign() {
+            saveAssign() {//保存
 
                 let _this=this;
                 this.loadingSave=true;
@@ -241,7 +242,7 @@
                     this.menuLoading = false
                 })
             },
-            // 角色选择改变监听
+            // 角色选择改变监听（未使用）
             handleRoleSelectChange(val) {
                 if(val == null || val.val == null) {
                     return
@@ -252,7 +253,7 @@
                     this.$refs.menuTree.setCheckedNodes(res.data)
                 })
             },
-            // 树节点选择监听
+            // 树节点选择监听（未使用）
             handleMenuCheckChange(data, check, subCheck) {
                 if(check) {
                     // 节点选中时同步选中父节点
@@ -267,66 +268,64 @@
                     }
                 }
             },
-        // 递归全选
-        checkAllMenu(menuData, allMenus) {
-            menuData.forEach(menu => {
-                allMenus.push(menu)
-                if(menu.children) {
-                    this.checkAllMenu(menu.children, allMenus)
-                }
-            });
-        },
-        // 角色菜单授权提交
-        submitAuthForm() {
-            let roleId = this.selectRole.id
-            if('admin' == this.selectRole.name) {
-                this.$message({message: '超级管理员拥有所有菜单权限，不允许修改！', type: 'error'})
-                return
-            }
-            this.authLoading = true
-            let checkedNodes = this.$refs.menuTree.getCheckedNodes(false, true)
-            let roleMenus = []
-            for(let i=0, len=checkedNodes.length; i<len; i++) {
-                let roleMenu = { roleId:roleId, menuId:checkedNodes[i].id }
-                roleMenus.push(roleMenu)
-            }
-            this.$api.role.saveRoleMenus(roleMenus).then((res) => {
-                if(res.code == 200) {
-                    this.$message({ message: '操作成功', type: 'success' })
-                } else {
-                    this.$message({message: '操作失败, ' + res.msg, type: 'error'})
-                }
-                this.authLoading = false
-            })
-        },
-        renderContent(h, { node, data, store }) {
-            return (
-                <div class="column-container">
-                <span style="text-algin:center;margin-right:80px;">{data.label}</span>
-            <span style="text-algin:center;margin-right:80px;">
-                <el-tag type={data.isbtn ?'success':'info'} size="small">
-            {!data.isbtn ?'菜单':'按钮'}
-        </el-tag>
-            </span>
+			// 递归全选（未使用）
+			checkAllMenu(menuData, allMenus) {
+				menuData.forEach(menu => {
+					allMenus.push(menu)
+					if(menu.children) {
+						this.checkAllMenu(menu.children, allMenus)
+					}
+				});
+			},
+			// 角色菜单授权提交（未使用）
+			submitAuthForm() {
+				let roleId = this.selectRole.id
+				if('admin' == this.selectRole.name) {
+					this.$message({message: '超级管理员拥有所有菜单权限，不允许修改！', type: 'error'})
+					return
+				}
+				this.authLoading = true
+				let checkedNodes = this.$refs.menuTree.getCheckedNodes(false, true)
+				let roleMenus = []
+				for(let i=0, len=checkedNodes.length; i<len; i++) {
+					let roleMenu = { roleId:roleId, menuId:checkedNodes[i].id }
+					roleMenus.push(roleMenu)
+				}
+				this.$api.role.saveRoleMenus(roleMenus).then((res) => {
+					if(res.code == 200) {
+						this.$message({ message: '操作成功', type: 'success' })
+					} else {
+						this.$message({message: '操作失败, ' + res.msg, type: 'error'})
+					}
+					this.authLoading = false
+				})
+			},
+			renderContent(h, { node, data, store }) {
+				return (
+					<div class="column-container">
+					<span style="text-algin:center;margin-right:80px;">{data.label}</span>
+				<span style="text-algin:center;margin-right:80px;">
+					<el-tag type={data.isbtn ?'success':'info'} size="small">
+				{!data.isbtn ?'菜单':'按钮'}
+				</el-tag>
+					</span>
 
-            </div>);
-        },
-        // 时间格式化
-        dateFormat: function (row, column, cellValue, index){
-            return format(row[column.property])
-        }
-
-
-        },
+					</div>);
+			},
+			// 时间格式化
+			dateFormat: function (row, column, cellValue, index){
+				return format(row[column.property])
+			}
+		},
         mounted() {
             this.loadingSave=true;
             this.loadingSaveStr='加载中...';
             this.getRoles();
 
-            this.$message({
-                message: "[2020-07-22 去掉该提醒] 菜单按钮展示方式已变更，请保证后端代码Blog.Core为最新",
-                type: 'warning'
-            });
+            // this.$message({
+            //     message: "[2020-07-22 去掉该提醒] 菜单按钮展示方式已变更，请保证后端代码Blog.Core为最新",
+            //     type: 'warning'
+            // });
 
             // this.getPermissions();
         }
